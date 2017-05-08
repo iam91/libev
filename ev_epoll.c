@@ -149,7 +149,7 @@ epoll_poll (EV_P_ ev_tstamp timeout)
 
   /* epoll wait times cannot be larger than (LONG_MAX - 999UL) / HZ msecs, which is below */
   /* the default libev max wait time, however. */
-  EV_RELEASE_CB;
+  EV_RELEASE_CB;  //TODO 弄明白这个
   eventcnt = epoll_wait (backend_fd, epoll_events, epoll_eventmax, timeout * 1e3);
   EV_ACQUIRE_CB;
 
@@ -176,6 +176,7 @@ epoll_poll (EV_P_ ev_tstamp timeout)
        * other spurious notifications will be found by epoll_ctl, below
        * we assume that fd is always in range, as we never shrink the anfds array
        */
+      //TODO 弄明白
       if (expect_false ((uint32_t)anfds [fd].egen != (uint32_t)(ev->data.u64 >> 32)))
         {
           /* recreate kernel state */
@@ -215,6 +216,7 @@ epoll_poll (EV_P_ ev_tstamp timeout)
   if (expect_false (eventcnt == epoll_eventmax))
     {
       ev_free (epoll_events);
+      //TODO 弄明白这个算法
       epoll_eventmax = array_nextsize (sizeof (struct epoll_event), epoll_eventmax, epoll_eventmax + 1);
       epoll_events = (struct epoll_event *)ev_malloc (sizeof (struct epoll_event) * epoll_eventmax);
     }
@@ -238,21 +240,22 @@ epoll_poll (EV_P_ ev_tstamp timeout)
 int inline_size
 epoll_init (EV_P_ int flags)
 {
+  //TODO close on exec
 #ifdef EPOLL_CLOEXEC
-  backend_fd = epoll_create1 (EPOLL_CLOEXEC);
+  backend_fd = epoll_create1 (EPOLL_CLOEXEC);  //EPOLL_CLOEXEC，创建的epoll会设置为FD_CLOEXEC
 
-  if (backend_fd < 0 && (errno == EINVAL || errno == ENOSYS))
+  if (backend_fd < 0 && (errno == EINVAL || errno == ENOSYS)) //EINVAL size is not positive, ENOSYS function not supported
 #endif
     backend_fd = epoll_create (256);
 
   if (backend_fd < 0)
     return 0;
 
-  fcntl (backend_fd, F_SETFD, FD_CLOEXEC);
+  fcntl (backend_fd, F_SETFD, FD_CLOEXEC);  //设置文件描述符为 close on execution
 
   backend_mintime = 1e-3; /* epoll does sometimes return early, this is just to avoid the worst */
   backend_modify  = epoll_modify;
-  backend_poll    = epoll_poll;
+  backend_poll    = epoll_poll;  //此函数提交事件
 
   epoll_eventmax = 64; /* initial number of events receivable per poll */
   epoll_events = (struct epoll_event *)ev_malloc (sizeof (struct epoll_event) * epoll_eventmax);

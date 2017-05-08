@@ -314,6 +314,7 @@ typedef struct ev_watcher_time
 
 /* invoked when fd is either EV_READable or EV_WRITEable */
 /* revent EV_READ, EV_WRITE */
+//io watcher结构体
 typedef struct ev_io
 {
   EV_WATCHER_LIST (ev_io)
@@ -687,10 +688,11 @@ EV_API_DECL void ev_resume  (EV_P) EV_THROW;
   ((ev_watcher *)(void *)(ev))->active  =	\
   ((ev_watcher *)(void *)(ev))->pending = 0;	\
   ev_set_priority ((ev), 0);			\
-  ev_set_cb ((ev), cb_);			\
+  ev_set_cb ((ev), cb_);			\  //设置回调函数，TODO 看回调函数的设置
 } while (0)
 
-#define ev_io_set(ev,fd_,events_)            do { (ev)->fd = (fd_); (ev)->events = (events_) | EV__IOFDSET; } while (0)
+//初始化watcher状态，绑定回调函数，设置监听的事件，帮顶监听的描述符
+#define ev_io_set(ev,fd_,events_)            do { (ev)->fd = (fd_); (ev)->events = (events_) | EV__IOFDSET; } while (0)  //TODO EV__IOFDSET作用
 #define ev_timer_set(ev,after_,repeat_)      do { ((ev_watcher_time *)(ev))->at = (after_); (ev)->repeat = (repeat_); } while (0)
 #define ev_periodic_set(ev,ofs_,ival_,rcb_)  do { (ev)->offset = (ofs_); (ev)->interval = (ival_); (ev)->reschedule_cb = (rcb_); } while (0)
 #define ev_signal_set(ev,signum_)            do { (ev)->signum = (signum_); } while (0)

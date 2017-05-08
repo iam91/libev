@@ -99,7 +99,7 @@ VARx(int *, pollidxs) /* maps fds into structure indices */
 VARx(int, pollidxmax)
 #endif
 
-#if EV_USE_EPOLL || EV_GENWRAP
+#if EV_USE_EPOLL || EV_GENWRAP  //使用epoll时ev_loop结构体的epoll相关内容
 VARx(struct epoll_event *, epoll_events)
 VARx(int, epoll_eventmax)
 VARx(int *, epoll_eperms)

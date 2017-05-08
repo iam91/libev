@@ -1811,11 +1811,11 @@ typedef struct
 
 #if EV_MULTIPLICITY
 
-  struct ev_loop
+  struct ev_loop  //循环结构体
   {
     ev_tstamp ev_rt_now;
     #define ev_rt_now ((loop)->ev_rt_now)
-    #define VAR(name,decl) decl;
+    #define VAR(name,decl) decl;  //声明结构体内容，具体内容在 "ev_vars.sh" 中
       #include "ev_vars.h"
     #undef VAR
   };
@@ -2901,7 +2901,7 @@ loop_init (EV_P_ unsigned int flags) EV_THROW
       if (!backend && (flags & EVBACKEND_KQUEUE)) backend = kqueue_init (EV_A_ flags);
 #endif
 #if EV_USE_EPOLL
-      if (!backend && (flags & EVBACKEND_EPOLL )) backend = epoll_init  (EV_A_ flags);
+      if (!backend && (flags & EVBACKEND_EPOLL )) backend = epoll_init  (EV_A_ flags);  //产生epoll实例，绑定事件提交函数
 #endif
 #if EV_USE_POLL
       if (!backend && (flags & EVBACKEND_POLL  )) backend = poll_init   (EV_A_ flags);
@@ -3651,6 +3651,8 @@ ev_run (EV_P_ int flags)
         ++loop_count;
 #endif
         assert ((loop_done = EVBREAK_RECURSE, 1)); /* assert for side effect */
+
+        //事件循环
         backend_poll (EV_A_ waittime);
         assert ((loop_done = EVBREAK_CANCEL, 1)); /* assert for side effect */
 
@@ -3813,7 +3815,7 @@ ev_start (EV_P_ W w, int active)
 {
   pri_adjust (EV_A_ w);
   w->active = active;
-  ev_ref (EV_A);
+  ev_ref (EV_A);  //增加loop的activecnt
 }
 
 inline_size void
@@ -3830,19 +3832,20 @@ ev_io_start (EV_P_ ev_io *w) EV_THROW
 {
   int fd = w->fd;
 
-  if (expect_false (ev_is_active (w)))
+  if (expect_false (ev_is_active (w)))  //已经为active, 返回
     return;
 
   assert (("libev: ev_io_start called with negative fd", fd >= 0));
   assert (("libev: ev_io_start called with illegal event mask", !(w->events & ~(EV__IOFDSET | EV_READ | EV_WRITE))));
 
-  EV_FREQUENT_CHECK;
+  EV_FREQUENT_CHECK;  //TODO 弄明白
 
-  ev_start (EV_A_ (W)w, 1);
+  ev_start (EV_A_ (W)w, 1);  //设置active为1,增加loop的activecnt
   array_needsize (ANFD, anfds, anfdmax, fd + 1, array_init_zero);
-  wlist_add (&anfds[fd].head, (WL)w);
+  wlist_add (&anfds[fd].head, (WL)w);  //将watcher添加到loop
 
   /* common bug, apparently */
+  //TODO 弄明白
   assert (("libev: ev_io_start called with corrupted watcher", ((WL)w)->next != (WL)w));
 
   fd_change (EV_A_ fd, w->events & EV__IOFDSET | EV_ANFD_REIFY);
