@@ -222,6 +222,9 @@
 /* this block tries to deduce configuration from header-defined symbols and defaults */
 
 /* try to deduce the maximum number of signals on this platform */
+/*
+ * NSIG 信号种类总数
+ */
 #if defined EV_NSIG
 /* use what's provided */
 #elif defined NSIG
@@ -3129,6 +3132,7 @@ array_verify (EV_P_ W *ws, int cnt)
 void ecb_cold
 ev_verify (EV_P) EV_THROW
 {
+  //检测libev内部数据结构合法性
 #if EV_VERIFY
   int i;
   WL w, w2;
@@ -3285,6 +3289,7 @@ ev_invoke_pending (EV_P)
           ANPENDING *p = pendings [pendingpri] + --pendingcnt [pendingpri];
 
           p->w->pending = 0;
+          //执行回调函数
           EV_CB_INVOKE (p->w, p->events);
           EV_FREQUENT_CHECK;
         }
@@ -3544,7 +3549,7 @@ ev_run (EV_P_ int flags)
 
   EV_INVOKE_PENDING; /* in case we recurse, ensure ordering stays nice and clean */
 
-  do
+  do  //事件循环
     {
 #if EV_VERIFY >= 2
       ev_verify (EV_A);
@@ -3559,7 +3564,7 @@ ev_run (EV_P_ int flags)
           }
 #endif
 
-#if EV_FORK_ENABLE
+#if EV_FORK_ENABLE  //TODO 弄明白 libev fork 是干嘛
       /* we might have forked, so queue fork handlers */
       if (expect_false (postfork))
         if (forkcnt)
@@ -3578,11 +3583,11 @@ ev_run (EV_P_ int flags)
         }
 #endif
 
-      if (expect_false (loop_done))
+      if (expect_false (loop_done))  //TODO
         break;
 
       /* we might have forked, so reify kernel state if necessary */
-      if (expect_false (postfork))
+      if (expect_false (postfork))  //TODO
         loop_fork (EV_A);
 
       /* update fd-related kernel structures */
@@ -3652,7 +3657,7 @@ ev_run (EV_P_ int flags)
 #endif
         assert ((loop_done = EVBREAK_RECURSE, 1)); /* assert for side effect */
 
-        //事件循环
+        //轮询事件
         backend_poll (EV_A_ waittime);
         assert ((loop_done = EVBREAK_CANCEL, 1)); /* assert for side effect */
 

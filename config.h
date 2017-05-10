@@ -15,18 +15,25 @@
 
 /* Define to 1 if you have the `eventfd' function. */
 #define HAVE_EVENTFD 1
+//TODO 弄明白
 
 /* Define to 1 if the floor function is available */
 #define HAVE_FLOOR 1
 
 /* Define to 1 if you have the `inotify_init' function. */
 #define HAVE_INOTIFY_INIT 1
+/*
+ * inotify API 提供监控文件系统事件的机制
+ */
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #define HAVE_INTTYPES_H 1
 
 /* Define to 1 if you have the `kqueue' function. */
 /* #undef HAVE_KQUEUE */
+/* 
+ * linux不支持kqueue
+ */
 
 /* Define to 1 if you have the `rt' library (-lrt). */
 /* #undef HAVE_LIBRT */
@@ -54,6 +61,9 @@
 
 /* Define to 1 if you have the `signalfd' function. */
 #define HAVE_SIGNALFD 1
+/*
+ * signalfd 创建接收信号的文件描述符
+ */
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #define HAVE_STDINT_H 1
